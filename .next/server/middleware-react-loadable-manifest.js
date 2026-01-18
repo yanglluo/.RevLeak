@@ -1,0 +1,1 @@
+self.__REACT_LOADABLE_MANIFEST="{\"contexts/AuthContext.tsx -> @/lib/supabase/client\":{\"id\":\"contexts/AuthContext.tsx -> @/lib/supabase/client\",\"files\":[\"static/chunks/_app-pages-browser_src_lib_supabase_client_ts.js\"]}}"
