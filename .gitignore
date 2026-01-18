@@ -1,0 +1,4 @@
+
+# Webhook event storage
+.data/
+node_modules
