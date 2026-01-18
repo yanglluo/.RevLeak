@@ -1,1 +1,0 @@
-"use strict";(self.webpackChunk_N_E=self.webpackChunk_N_E||[]).push([[933],{8933:function(e,r,n){n.r(r),n.d(r,{createClient:function(){return t}});var u=n(4033);function t(){return(0,u.createBrowserClient)("your_supabase_project_url","your_supabase_anon_key")}}}]);
