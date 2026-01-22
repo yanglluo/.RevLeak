@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import DashboardLayout from '@/components/DashboardLayout';
+import ProtectedRoute from '@/components/ProtectedRoute';
 import {
     Settings,
     Zap,
@@ -18,7 +19,7 @@ import {
 } from 'lucide-react';
 import toast, { Toaster } from 'react-hot-toast';
 
-export default function SettingsPage() {
+function SettingsContent() {
     const [stripeStatus, setStripeStatus] = useState<{
         connected: boolean;
         account?: { id: string; businessName?: string; email?: string };
@@ -457,5 +458,14 @@ export default function SettingsPage() {
                 </div>
             </div>
         </DashboardLayout>
+    );
+}
+
+// Protected Settings Page - requires authentication
+export default function SettingsPage() {
+    return (
+        <ProtectedRoute requirePayment={false}>
+            <SettingsContent />
+        </ProtectedRoute>
     );
 }

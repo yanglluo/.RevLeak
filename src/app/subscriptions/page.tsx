@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import DashboardLayout from '@/components/DashboardLayout';
+import ProtectedRoute from '@/components/ProtectedRoute';
 import {
     CreditCard,
     Search,
@@ -60,7 +61,7 @@ function getStatusBadge(status: string) {
     return styles[status] || 'badge-neutral';
 }
 
-export default function SubscriptionsPage() {
+function SubscriptionsContent() {
     const [subscriptions, setSubscriptions] = useState<Subscription[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [searchQuery, setSearchQuery] = useState('');
@@ -270,5 +271,14 @@ export default function SubscriptionsPage() {
                 </div>
             )}
         </DashboardLayout>
+    );
+}
+
+// Protected Subscriptions Page - requires authentication
+export default function SubscriptionsPage() {
+    return (
+        <ProtectedRoute requirePayment={false}>
+            <SubscriptionsContent />
+        </ProtectedRoute>
     );
 }

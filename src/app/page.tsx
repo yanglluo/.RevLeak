@@ -184,7 +184,7 @@ function HeroSection() {
 
 // Logo Ticker
 function LogoTicker() {
-    const logos = ['Flowbyte', 'CipherCloud', 'Novastack', 'Zunapulse', 'Flowbyte', 'CipherCloud'];
+    const logos = ['Your Company', 'Your Company', 'Your Company', 'Your Company', 'Your Company', 'Your Company'];
 
     return (
         <section className="landing-ticker">

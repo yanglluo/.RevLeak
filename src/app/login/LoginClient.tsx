@@ -28,17 +28,10 @@ export default function LoginClient() {
     // Redirect if already logged in
     useEffect(() => {
         if (!authLoading && user) {
-            if (isPaid) {
-                router.push(redirectTo);
-            } else if (plan && priceId) {
-                // Redirect to checkout if coming from pricing
-                handleCheckout(priceId, plan);
-            } else {
-                // Show pricing if not paid
-                router.push('/#pricing');
-            }
+            // DEV MODE: Always redirect to dashboard (payment check bypassed)
+            router.push(redirectTo);
         }
-    }, [user, isPaid, authLoading, redirectTo, plan, priceId]);
+    }, [user, authLoading, redirectTo]);
 
     const handleCheckout = async (priceId: string, planName: string) => {
         try {

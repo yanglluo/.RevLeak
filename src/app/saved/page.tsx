@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import DashboardLayout from '@/components/DashboardLayout';
+import ProtectedRoute from '@/components/ProtectedRoute';
 import {
     TrendingUp,
     DollarSign,
@@ -91,7 +92,7 @@ function formatTimeAgo(date: Date): string {
     return `${days}d ago`;
 }
 
-export default function RevenueSavedPage() {
+function RevenueSavedContent() {
     const [resolvedLeaks, setResolvedLeaks] = useState<ResolvedLeak[]>(demoResolved);
     const [isLoading, setIsLoading] = useState(false);
     const [timeRange, setTimeRange] = useState<'7d' | '30d' | '90d'>('30d');
@@ -257,5 +258,14 @@ export default function RevenueSavedPage() {
                 </div>
             </div>
         </DashboardLayout>
+    );
+}
+
+// Protected Revenue Saved Page - requires authentication
+export default function RevenueSavedPage() {
+    return (
+        <ProtectedRoute requirePayment={false}>
+            <RevenueSavedContent />
+        </ProtectedRoute>
     );
 }

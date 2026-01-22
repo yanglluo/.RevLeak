@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import DashboardLayout from '@/components/DashboardLayout';
+import ProtectedRoute from '@/components/ProtectedRoute';
 import {
     AlertTriangle,
     Clock,
@@ -45,7 +46,7 @@ function getLeakTypeLabel(type: string): string {
     return labels[type] || type;
 }
 
-export default function LeaksPage() {
+function LeaksContent() {
     const [leaks, setLeaks] = useState<DetectedLeak[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [actionLoading, setActionLoading] = useState<string | null>(null);
@@ -324,5 +325,14 @@ export default function LeaksPage() {
                 </div>
             )}
         </DashboardLayout>
+    );
+}
+
+// Protected Leaks Page - requires authentication
+export default function LeaksPage() {
+    return (
+        <ProtectedRoute requirePayment={false}>
+            <LeaksContent />
+        </ProtectedRoute>
     );
 }

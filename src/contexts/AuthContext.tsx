@@ -152,7 +152,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
                     setProfile(profileData);
                 }
-            } catch (error) {
+            } catch (error: any) {
+                // Ignore AbortError - this happens during navigation and is expected
+                if (error?.name === 'AbortError' || error?.message?.includes('aborted')) {
+                    console.log('Auth init aborted (navigation occurred)');
+                    return;
+                }
                 console.error('Auth init error:', error);
             } finally {
                 setIsLoading(false);

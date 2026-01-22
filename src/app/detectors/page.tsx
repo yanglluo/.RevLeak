@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import DashboardLayout from '@/components/DashboardLayout';
+import ProtectedRoute from '@/components/ProtectedRoute';
 import {
     Shield,
     CreditCard,
@@ -117,7 +118,7 @@ function formatTimeAgo(date?: Date): string {
     return `${days}d ago`;
 }
 
-export default function DetectorsPage() {
+function DetectorsContent() {
     const [detectors, setDetectors] = useState<Detector[]>(initialDetectors);
 
     const toggleDetector = (id: string) => {
@@ -246,5 +247,14 @@ export default function DetectorsPage() {
                 })}
             </div>
         </DashboardLayout>
+    );
+}
+
+// Protected Detectors Page - requires authentication
+export default function DetectorsPage() {
+    return (
+        <ProtectedRoute requirePayment={false}>
+            <DetectorsContent />
+        </ProtectedRoute>
     );
 }

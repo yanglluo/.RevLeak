@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import DashboardLayout from '@/components/DashboardLayout';
+import ProtectedRoute from '@/components/ProtectedRoute';
 import {
     Zap,
     CheckCircle2,
@@ -26,7 +27,7 @@ interface Integration {
     configUrl?: string;
 }
 
-export default function IntegrationsPage() {
+function IntegrationsContent() {
     const [stripeConnected, setStripeConnected] = useState<boolean | null>(null);
     const [isLoading, setIsLoading] = useState(true);
 
@@ -217,5 +218,14 @@ export default function IntegrationsPage() {
                 </div>
             </div>
         </DashboardLayout>
+    );
+}
+
+// Protected Integrations Page - requires authentication
+export default function IntegrationsPage() {
+    return (
+        <ProtectedRoute requirePayment={false}>
+            <IntegrationsContent />
+        </ProtectedRoute>
     );
 }

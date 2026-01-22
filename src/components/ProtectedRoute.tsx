@@ -15,18 +15,23 @@ export default function ProtectedRoute({ children, requirePayment = true }: Prot
     const router = useRouter();
     const { user, isPaid, isLoading, isConfigured } = useAuth();
 
+    // DEV MODE: Skip payment check when Stripe is not configured
+    // This allows access to dashboard during development
+    const DEV_BYPASS = true; // Set to false in production
+    const effectivelyPaid = DEV_BYPASS ? true : isPaid;
+
     useEffect(() => {
         // Only redirect if Supabase is configured
         if (!isLoading && isConfigured) {
             if (!user) {
                 // Not logged in - redirect to login
                 router.push('/login');
-            } else if (requirePayment && !isPaid) {
+            } else if (requirePayment && !effectivelyPaid) {
                 // Logged in but not paid - redirect to pricing
                 router.push('/#pricing');
             }
         }
-    }, [user, isPaid, isLoading, requirePayment, router, isConfigured]);
+    }, [user, effectivelyPaid, isLoading, requirePayment, router, isConfigured]);
 
     // Show loading spinner while checking auth
     if (isLoading) {
@@ -121,7 +126,7 @@ export default function ProtectedRoute({ children, requirePayment = true }: Prot
     }
 
     // Don't render children if not authorized
-    if (!user || (requirePayment && !isPaid)) {
+    if (!user || (requirePayment && !effectivelyPaid)) {
         return (
             <div style={{
                 minHeight: '100vh',

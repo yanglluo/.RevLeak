@@ -162,106 +162,50 @@ function DashboardContent() {
     // Filter out dismissed leaks
     const activeLeaks = data?.leaks.filter(l => !dismissedLeaks.has(l.id)) || [];
 
-    // Stats with fallback to demo data
+    // Clean slate stats when Stripe isn't connected (no demo data)
     const stats = data?.stats || {
-        revenueAtRisk: 12450,
-        revenueSaved: 8320,
-        activeLeaks: 3,
-        resolvedLeaks: 21,
-        detectionRate: 99.7,
-        criticalLeaks: 1,
-        warningLeaks: 2,
+        revenueAtRisk: 0,
+        revenueSaved: 0,
+        activeLeaks: 0,
+        resolvedLeaks: 0,
+        detectionRate: 0,
+        criticalLeaks: 0,
+        warningLeaks: 0,
     };
 
     const statCards = [
         {
             label: 'Revenue at Risk',
-            value: formatCurrency(stats.revenueAtRisk),
-            change: `${stats.criticalLeaks} critical`,
-            changeType: 'negative' as const,
+            value: stripeConnected === false ? '--' : formatCurrency(stats.revenueAtRisk),
+            change: stripeConnected === false ? 'Connect Stripe to view' : `${stats.criticalLeaks} critical`,
+            changeType: stripeConnected === false ? 'neutral' as const : 'negative' as const,
             icon: AlertTriangle,
         },
         {
             label: 'Revenue Saved (30d)',
-            value: formatCurrency(stats.revenueSaved),
-            change: '+18.2% vs last month',
-            changeType: 'positive' as const,
+            value: stripeConnected === false ? '--' : formatCurrency(stats.revenueSaved),
+            change: stripeConnected === false ? 'Connect Stripe to view' : '+18.2% vs last month',
+            changeType: stripeConnected === false ? 'neutral' as const : 'positive' as const,
             icon: TrendingUp,
         },
         {
             label: 'Active Subscriptions',
-            value: (data?.subscriptions?.length || 1247).toLocaleString(),
-            change: '+5.1% vs last month',
-            changeType: 'positive' as const,
+            value: stripeConnected === false ? '--' : (data?.subscriptions?.length || 0).toLocaleString(),
+            change: stripeConnected === false ? 'Connect Stripe to view' : '+5.1% vs last month',
+            changeType: stripeConnected === false ? 'neutral' as const : 'positive' as const,
             icon: Users,
         },
         {
             label: 'Detection Rate',
-            value: `${stats.detectionRate}%`,
-            change: 'All detectors active',
-            changeType: 'positive' as const,
+            value: stripeConnected === false ? '--' : `${stats.detectionRate}%`,
+            change: stripeConnected === false ? 'Connect Stripe to view' : 'All detectors active',
+            changeType: stripeConnected === false ? 'neutral' as const : 'positive' as const,
             icon: Shield,
         },
     ];
 
-    // Demo data for when Stripe isn't connected
-    const demoLeaks: DetectedLeak[] = [
-        {
-            id: 'demo-1',
-            type: 'payment_failed',
-            priority: 'critical',
-            title: 'Payment Failed',
-            description: 'Card authentication required (3DS)',
-            customerId: 'cus_demo1',
-            customerEmail: 'billing@acme.com',
-            customerName: 'Acme Corp',
-            subscriptionId: 'sub_demo1',
-            invoiceId: 'in_demo1',
-            amount: 2400,
-            currency: 'USD',
-            detectedAt: new Date(),
-            interventionWindowHours: 62,
-            failureReason: 'authentication_required',
-            retryCount: 2,
-            metadata: {},
-        },
-        {
-            id: 'demo-2',
-            type: 'subscription_past_due',
-            priority: 'warning',
-            title: 'Subscription Past Due',
-            description: 'Insufficient funds',
-            customerId: 'cus_demo2',
-            customerEmail: 'finance@techstart.io',
-            customerName: 'TechStart Inc',
-            subscriptionId: 'sub_demo2',
-            amount: 890,
-            currency: 'USD',
-            detectedAt: new Date(),
-            interventionWindowHours: 128,
-            failureReason: 'insufficient_funds',
-            retryCount: 1,
-            metadata: {},
-        },
-        {
-            id: 'demo-3',
-            type: 'card_expiring',
-            priority: 'warning',
-            title: 'Card Expiring Soon',
-            description: 'Payment method expires in 12 days',
-            customerId: 'cus_demo3',
-            customerEmail: 'accounts@globaltech.com',
-            customerName: 'GlobalTech Ltd',
-            subscriptionId: 'sub_demo3',
-            amount: 1200,
-            currency: 'USD',
-            detectedAt: new Date(),
-            interventionWindowHours: 288,
-            metadata: { cardLast4: '4242', cardBrand: 'visa' },
-        },
-    ];
-
-    const displayLeaks = activeLeaks.length > 0 ? activeLeaks : demoLeaks;
+    // No demo data - show empty state when Stripe isn't connected
+    const displayLeaks = activeLeaks;
 
     return (
         <DashboardLayout
@@ -555,19 +499,27 @@ function DashboardContent() {
                             </div>
                             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                                 <span className="text-sm">Payment Detector</span>
-                                <span className="badge badge-success">Active</span>
+                                <span className={`badge ${stripeConnected ? 'badge-success' : 'badge-muted'}`}>
+                                    {stripeConnected ? 'Active' : 'Waiting'}
+                                </span>
                             </div>
                             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                                 <span className="text-sm">Card Expiry Monitor</span>
-                                <span className="badge badge-success">Active</span>
+                                <span className={`badge ${stripeConnected ? 'badge-success' : 'badge-muted'}`}>
+                                    {stripeConnected ? 'Active' : 'Waiting'}
+                                </span>
                             </div>
                             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                                 <span className="text-sm">Churn Predictor</span>
-                                <span className="badge badge-success">Active</span>
+                                <span className={`badge ${stripeConnected ? 'badge-success' : 'badge-muted'}`}>
+                                    {stripeConnected ? 'Active' : 'Waiting'}
+                                </span>
                             </div>
                             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                                 <span className="text-sm">Webhook Listener</span>
-                                <span className="badge badge-success">Active</span>
+                                <span className={`badge ${stripeConnected ? 'badge-success' : 'badge-muted'}`}>
+                                    {stripeConnected ? 'Active' : 'Waiting'}
+                                </span>
                             </div>
                         </div>
                     </div>

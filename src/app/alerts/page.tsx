@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import DashboardLayout from '@/components/DashboardLayout';
+import ProtectedRoute from '@/components/ProtectedRoute';
 import {
     Bell,
     Search,
@@ -100,7 +101,7 @@ function formatCurrency(amount: number): string {
     }).format(amount);
 }
 
-export default function AlertsPage() {
+function AlertsContent() {
     const [alerts, setAlerts] = useState<Alert[]>(demoAlerts);
     const [filter, setFilter] = useState<'all' | 'unread'>('all');
 
@@ -218,5 +219,14 @@ export default function AlertsPage() {
                 )}
             </div>
         </DashboardLayout>
+    );
+}
+
+// Protected Alerts Page - requires authentication
+export default function AlertsPage() {
+    return (
+        <ProtectedRoute requirePayment={false}>
+            <AlertsContent />
+        </ProtectedRoute>
     );
 }

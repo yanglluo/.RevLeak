@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import DashboardLayout from '@/components/DashboardLayout';
+import ProtectedRoute from '@/components/ProtectedRoute';
 import {
     Users,
     Search,
@@ -34,7 +35,7 @@ function formatCurrency(amount: number, currency: string = 'USD'): string {
     }).format(amount);
 }
 
-export default function CustomersPage() {
+function CustomersContent() {
     const [customers, setCustomers] = useState<Customer[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [searchQuery, setSearchQuery] = useState('');
@@ -222,5 +223,14 @@ export default function CustomersPage() {
                 </div>
             )}
         </DashboardLayout>
+    );
+}
+
+// Protected Customers Page - requires authentication
+export default function CustomersPage() {
+    return (
+        <ProtectedRoute requirePayment={false}>
+            <CustomersContent />
+        </ProtectedRoute>
     );
 }
