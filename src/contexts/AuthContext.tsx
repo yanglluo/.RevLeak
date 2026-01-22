@@ -37,6 +37,16 @@ function isSupabaseConfigured(): boolean {
     const isUrlValid = url && url.startsWith('http') && !url.includes('your_supabase');
     const isKeyValid = key && key.length > 20 && !key.includes('your_supabase');
 
+    if (!isUrlValid || !isKeyValid) {
+        console.warn('Supabase Config Issues:', {
+            urlPresent: !!url,
+            urlValid: isUrlValid,
+            keyPresent: !!key,
+            keyValid: isKeyValid,
+            urlValue: url ? 'Set (Hidden)' : 'Missing',
+        });
+    }
+
     return Boolean(isUrlValid && isKeyValid);
 }
 
